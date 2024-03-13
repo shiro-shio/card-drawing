@@ -50,6 +50,7 @@ function game() {
         container.appendChild(card);
     }
     cards = document.querySelectorAll('.card');
+    mousestart()
     autirun()
 }
 
@@ -65,34 +66,40 @@ function drawLottery(card) {
 
 let autoRotateInterval;
 function autirun() {
-    clearInterval(autoRotateInterval);
-    autoRotateInterval = setInterval(() => {
-        mouseX += 1;
-        updateCardTransforms();
-    }, 100);
-}
-
-container.addEventListener('mousedown', function (event) {
-    isDragging = true;
-    previousMouseX = event.clientX;
-    inertia = 0;
-    clearInterval(autoRotateInterval);
-});
-
-document.addEventListener('mouseup', function () {
-    isDragging = false;
-    clearInterval(autoRotateInterval);
-    autirun()
-});
-
-document.addEventListener('mousemove', function (event) {
-    if (isDragging) {
-        const delta = event.clientX - previousMouseX;
-        mouseX += delta * 0.1;
-        previousMouseX = event.clientX;
-        updateCardTransforms();
+        clearInterval(autoRotateInterval);
+        autoRotateInterval = setInterval(() => {
+            mouseX += 1;
+            updateCardTransforms();
+        }, 100);
     }
-});
+
+let isMouseTracking = false;
+function mousestart(){
+    if (!isMouseTracking) {
+        container.addEventListener('mousedown', function (event) {
+            isDragging = true;
+            previousMouseX = event.clientX;
+            inertia = 0;
+            clearInterval(autoRotateInterval);
+        });
+        
+        document.addEventListener('mouseup', function () {
+            isDragging = false;
+            clearInterval(autoRotateInterval);
+            autirun()
+        });
+        
+        document.addEventListener('mousemove', function (event) {
+            if (isDragging) {
+                const delta = event.clientX - previousMouseX;
+                mouseX += delta * 0.1;
+                previousMouseX = event.clientX;
+                updateCardTransforms();
+            }
+        });
+        isMouseTracking = true;
+    }
+}
 
 function updateCardTransforms() {
     cards.forEach((card, index) => {
