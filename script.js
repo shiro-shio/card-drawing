@@ -1,5 +1,5 @@
 const container = document.getElementById('container');
-const angleInit = -60;
+const angleInit = -80;
 let cards
 // 卡牌數量 獎品名稱 獎品數量 獎品圖片
 const numCards = 20;
