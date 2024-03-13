@@ -65,6 +65,7 @@ function drawLottery(card) {
 
 let autoRotateInterval;
 function autirun() {
+    clearInterval(autoRotateInterval);
     autoRotateInterval = setInterval(() => {
         mouseX += 1;
         updateCardTransforms();
