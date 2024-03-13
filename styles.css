@@ -1,8 +1,8 @@
 #game-button{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
-  justify-content: space-around;
+  align-items: center;
 }
 
 .container {
@@ -32,6 +32,15 @@
   transition: transform 0.5s;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.card:hover{
+  border: 3px solid #fffb00;
+  border-radius: 5px;
+  width: 95px;
+  height: 180px;
+  margin-top: -15px;
+  box-shadow: 0 0 20px #fffb00;
 }
 
 .opencard{

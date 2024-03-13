@@ -14,6 +14,11 @@ document.getElementById('game-start').addEventListener('click', () => {
     game()
 })
 
+document.getElementById('rotation').addEventListener('click', () => {
+    clearInterval(autoRotateInterval);
+})
+
+
 function game() {
     clearInterval(autoRotateInterval);
     container.innerHTML = '';
@@ -45,7 +50,7 @@ function game() {
             card.textContent = ''//prizeName;
         });
 
-        card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 85 / 3.14 / 2 + 30}px)`;
+        card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
         card.style.zIndex = numCards - i;
         container.appendChild(card);
     }
@@ -104,7 +109,7 @@ function mousestart(){
 function updateCardTransforms() {
     cards.forEach((card, index) => {
         const rotation = mouseX + index * angleIncrement;
-        card.style.transform = `rotateY(${rotation}deg) translateZ(${numCards * 85 / 3.14 / 2 + 30}px)`;
+        card.style.transform = `rotateY(${rotation}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
         const zIndex = numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)) + 1;
         card.style.zIndex = zIndex;
     });
