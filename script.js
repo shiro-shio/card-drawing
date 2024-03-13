@@ -5,9 +5,9 @@ let cards
 const numCards = 20;
 const angleIncrement = 360 / numCards;
 const prizes = [
-    { name: '獎品1', quantity: 2, img: 'img/1.png' },
-    { name: '獎品2', quantity: 1, img: 'img/2.png' },
-    { name: '獎品3', quantity: 3, img: 'img/3.png' }
+    { name: '獎品1', quantity: 2, img: 'img/2.png' },
+    { name: '獎品2', quantity: 1, img: 'img/3.png' },
+    { name: '獎品3', quantity: 3, img: 'img/4.png' }
 ];
 
 document.getElementById('game-start').addEventListener('click', () => {
@@ -29,8 +29,6 @@ function game() {
         prizeList.push('銘謝惠顧');
     }
     prizeList.sort(() => Math.random() - 0.5);
-
-
 
     for (let i = 0; i < numCards; i++) {
         const card = document.createElement('div');
@@ -59,7 +57,6 @@ let isDragging = false;
 let mouseX = 0;
 let previousMouseX = 0;
 let inertia = 0.05;
-
 
 function drawLottery(card) {
     const cardNumber = parseInt(card.textContent);
