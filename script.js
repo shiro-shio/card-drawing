@@ -2,24 +2,105 @@ const container = document.getElementById('container');
 const angleInit = -80;
 let cards
 // 卡牌數量 獎品名稱 獎品數量 獎品圖片
-const numCards = 20;
-const angleIncrement = 360 / numCards;
-const prizes = [
-    { name: '獎品1', quantity: 2, img: 'img/2.png' },
-    { name: '獎品2', quantity: 1, img: 'img/3.png' },
-    { name: '獎品3', quantity: 3, img: 'img/4.png' }
+let rot = true
+let bag = false
+let numCards = 20;
+let angleIncrement = 360 / numCards;
+let prizes = [
+    { name: '紅卡', quantity: 2, img: 'img/2.png' },
+    { name: '橘卡', quantity: 1, img: 'img/3.png' },
+    { name: '藍卡', quantity: 3, img: 'img/4.png' }
 ];
-
-document.getElementById('game-start').addEventListener('click', () => {
-    game()
-})
 
 document.getElementById('rotation').addEventListener('click', () => {
     clearInterval(autoRotateInterval);
 })
 
+function gameset(){
+    numCards=parseInt(document.getElementById('count').value)
+    angleIncrement = 360 / numCards;
+    rot = document.getElementById('option1').checked
+    bag = document.getElementById('option2').checked
+
+}
+
+function generateTableWithInputs(rows) {
+    var table = '<table border="1">';
+    table += '<tr>';
+    table += '<th>名稱</th>';
+    table += '<th>3:5圖片源(URL)</th>';
+    table += '<th>數量(概率)</th>';
+    table += '</tr>';
+    for (var row = 0; row < rows; row++) {
+        table += '<tr>';
+        table += '<td><input name="col0" type="text"></td>';
+        table += '<td><input name="col1" type="text"></td>';
+        table += '<td><input name="col2" type="number" min=0 value="0"></td>';
+        table += '</tr>';
+    }
+
+    table += '</table>';
+    document.getElementById('table-container1').innerHTML = table;
+    document.getElementById('table-container2').innerHTML = table;
+    document.getElementById('table-container3').innerHTML = table;
+}
+generateTableWithInputs(10);
+
+for (var ex=0; ex<prizes.length;ex++){
+    document.getElementById('table-container1').querySelectorAll('input[name="col0"]')[ex].value=prizes[ex].name
+    document.getElementById('table-container1').querySelectorAll('input[name="col1"]')[ex].value=prizes[ex].img
+    document.getElementById('table-container1').querySelectorAll('input[name="col2"]')[ex].value=prizes[ex].quantity
+}
+
+function isImageURL(url) {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', 'webp'];
+    const lowerCaseURL = url.toLowerCase();
+    return imageExtensions.some(ext => lowerCaseURL.endsWith(ext));
+}
+
+document.getElementById('game-start').addEventListener('click', () => {
+    let _name = '';
+    let _quantity = 0;
+    let _img = '';
+    prizes = [];
+    const containers = document.querySelectorAll('.table-container');
+    containers.forEach(container => {
+        const inputs = container.querySelectorAll('input');
+        const filledInputs = Array.from(inputs).filter(input => input.value.trim() !== '');
+        filledInputs.forEach(input => {
+            if (input.name === 'col0' && input.value.trim() !== '') {
+                _name = input.value.trim();
+            } else if (input.name === 'col1' && input.value.trim() !== '') {
+                _img = input.value.trim();
+            } else if (input.name === 'col2' && input.value.trim() !== '') {
+                _quantity = parseInt(input.value.trim(), 10);
+            }
+            if (_name && _quantity > 0) {
+                if(isImageURL(_img)){
+                    prizes.push({ name: _name, img:_img, quantity: _quantity });
+                }else{
+                    prizes.push({ name: _name, img:'', quantity: _quantity });
+                }
+                _name = '';
+                _quantity = 0;
+                _img = '';
+            }
+        });
+        if (filledInputs.length === 0) {
+            console.log('沒有填入資料的單元格');
+        }
+    });
+    game()
+});
+
+
+function getRandomlist(list) {
+    const randomIndex = Math.floor(Math.random() * list.length);
+    return list[randomIndex];
+}
 
 function game() {
+    gameset()
     clearInterval(autoRotateInterval);
     container.innerHTML = '';
     let totalPrizes = prizes.reduce((acc, prize) => acc + prize.quantity, 0);
@@ -28,32 +109,49 @@ function game() {
         for (let i = 0; i < prize.quantity; i++) {
             prizeList.push(prize.name);
         }
-    }
+    };
+    if (bag){
+        while (prizeList.length < 100) {
+            prizeList.push('');
+        }
+    }else{
+        while (prizeList.length < numCards) {
+            prizeList.push('');
+        }
+    };
 
-    while (prizeList.length < numCards) {
-        prizeList.push('銘謝惠顧');
-    }
     prizeList.sort(() => Math.random() - 0.5);
+    console.log(prizeList)
 
     for (let i = 0; i < numCards; i++) {
         const card = document.createElement('div');
+        let prizeName
         card.classList.add('card');
         card.id = i
         //card.textContent = i + 1
         card.addEventListener('click', function () {
-            const prizeName = prizeList[i];
+            if(bag){
+                prizeName = getRandomlist(prizeList);
+            }else{
+                prizeName = prizeList[i];
+            }
             const prize = prizes.find(prize => prize.name === prizeName);
             card.classList.add('opencard');
             if (prize) {
                 card.style.backgroundImage = `url(${prize.img})`
             }
-            card.textContent = ''//prizeName;
+            card.textContent = prizeName;
         });
 
-        card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
-        card.style.zIndex = numCards - i;
+        card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 100 / 3.14/2*1.5}px)`;
+        card.style.zIndex = (numCards - i)*2;
         container.appendChild(card);
     }
+    const card = document.createElement('div');
+    card.id = "wall"
+    card.style.zIndex = Math.ceil(numCards / 2) * 2 + 1
+    container.appendChild(card);
+
     cards = document.querySelectorAll('.card');
     mousestart()
     autirun()
@@ -71,16 +169,27 @@ function drawLottery(card) {
 
 let autoRotateInterval;
 function autirun() {
+    if (rot){
         clearInterval(autoRotateInterval);
         autoRotateInterval = setInterval(() => {
             mouseX += 1;
             updateCardTransforms();
         }, 100);
     }
+    }
 
 let isMouseTracking = false;
 function mousestart(){
     if (!isMouseTracking) {
+        container.addEventListener('mouseenter', function (event) {
+            clearInterval(autoRotateInterval);
+        });
+
+        container.addEventListener('mouseleave', function (event) {
+            clearInterval(autoRotateInterval);
+            autirun()
+        });
+
         container.addEventListener('mousedown', function (event) {
             isDragging = true;
             previousMouseX = event.clientX;
@@ -91,7 +200,7 @@ function mousestart(){
         document.addEventListener('mouseup', function () {
             isDragging = false;
             clearInterval(autoRotateInterval);
-            autirun()
+            //autirun()
         });
         
         document.addEventListener('mousemove', function (event) {
@@ -106,11 +215,34 @@ function mousestart(){
     }
 }
 
+//function updateCardTransforms() {
+//    cards.forEach((card, index) => {
+//        const rotation = mouseX + index * angleIncrement;
+//        card.style.transform = `rotateY(${rotation}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
+//        const zIndex = numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)) + 1;
+//        card.style.zIndex = zIndex;
+//    });
+//    if (!isDragging) {
+//        mouseX += inertia;
+//        inertia *= 0.95;
+//        if (Math.abs(inertia) < 0.01) {
+//            inertia = 0;
+//        }
+//        requestAnimationFrame(updateCardTransforms);
+//    }
+//}
+//  
 function updateCardTransforms() {
+    const newStyles = [];
+    for (let i = 0; i < cards.length; i++) {
+        const rotation = mouseX + i * angleIncrement;
+        const zIndex = (numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)))*2;
+        const transformValue = `rotateY(${rotation}deg) translateZ(${numCards * 100 / 3.14 / 2}px)`;
+        newStyles.push({ transform: transformValue, zIndex: zIndex });
+    }
     cards.forEach((card, index) => {
-        const rotation = mouseX + index * angleIncrement;
-        card.style.transform = `rotateY(${rotation}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
-        const zIndex = numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)) + 1;
+        const { transform, zIndex } = newStyles[index];
+        card.style.transform = transform;
         card.style.zIndex = zIndex;
     });
     if (!isDragging) {
@@ -122,4 +254,3 @@ function updateCardTransforms() {
         requestAnimationFrame(updateCardTransforms);
     }
 }
-  

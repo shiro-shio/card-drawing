@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>抽卡遊戲</title>
-<link rel="stylesheet" type="text/css" href="styles.css?ver=202403140009">
+<link rel="stylesheet" type="text/css" href="styles.css?ver=202403141851">
 </head>
 <body>
     <div class="top-bar">
@@ -30,8 +30,31 @@
         <button id="game-start">開始遊戲</button>
         <button id="rotation">自轉暫停</button>
     </div>
-    <div class="container" id="container">
+        <div class="container" id="container">
     </div>
-<script src="script.js?ver=202403140009"></script>
+    <div id="game-set" style="margin-top: 2%;">
+        <!--button id="toggleButton">展開/收起</button-->
+        <div class="content">
+            <span>卡片數量:</span>
+            <input type="number" id="count" min="10" max="40" value="20">
+            <div>
+                <label for="option1">自轉：</label>
+                <input type="checkbox" id="option1" name="option1" value="1" checked>
+                <label for="option2">卡包模式：</label>
+                <input type="checkbox" id="option2" name="option2" value="1">
+            </div>
+            <span>
+                <p>※卡包模式:會將表格數量以機率做為表示</p>
+            </span>
+            <span>名稱不填寫=不顯示, URL需要是公開來源, 數量請填寫整數</span>
+            <div style="display: flex;">
+                <div id="table-container1" class="table-container" style="margin-left: 10px;"></div>
+                <div id="table-container2" class="table-container" style="margin-left: 10px;"></div>
+                <div id="table-container3" class="table-container" style="margin-left: 10px;"></div>
+            </div>
+
+        </div>
+    </div>
+<script src="script.js?ver=202403141851"></script>
 </body>
 </html>

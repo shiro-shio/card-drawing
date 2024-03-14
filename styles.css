@@ -12,22 +12,22 @@
   perspective: 2500px;
   margin: 0 auto;
   width: 500px;
-  height: 150px;
-  margin-top: 10%;
+  height: 150px;/*150*/
+  margin-top: 5%;
   user-select: none;
 }
 
 .card {
   position: absolute;
-  width: 85px;
-  height: 150px;
+  width: 90px;/*3:5*/
+  height: 150px;/**/
   background-color: #70baff;
   background-image: url(img/1.png);
-  background-repeat: round;
+  background-size: cover;
   border: 1px solid #000000;
   border-radius: 5px;
   text-align: center;
-  line-height: 150px;
+  line-height: 150px;/**/
   font-size: 20px;
   transition: transform 0.5s;
   overflow: hidden;
@@ -37,16 +37,38 @@
 .card:hover{
   border: 3px solid #fffb00;
   border-radius: 5px;
-  width: 95px;
-  height: 180px;
-  margin-top: -15px;
+  width: 100px;/*+10*/
+  height: 180px;/*+30*/
+  margin-top: -15px;/*-15*/
   box-shadow: 0 0 20px #fffb00;
+  line-height: 180px;/**/
 }
 
 .opencard{
   background-color: #ffffff;
   background-image: none;
 }
+
+#wall{
+  margin-top: -7%;
+  margin-left: -50%;
+  margin-right: -50%;
+  width: 200%;
+  height: 150%;
+  pointer-events:auto;
+  background-color: #00000000;
+}
+
+input[name="col0"]{
+  width: 80px;
+}
+input[name="col1"]{
+  width: 250px;
+}
+input[name="col2"]{
+  width: 70px;
+}
+
 
 body {
   margin: 0;
