@@ -75,7 +75,7 @@ document.getElementById('game-start').addEventListener('click', () => {
             } else if (input.name === 'col2' && input.value.trim() !== '') {
                 _quantity = parseInt(input.value.trim(), 10);
             }
-            if (_name && _quantity > 0) {
+            if ((_name && _quantity > 0) || (_img && _quantity > 0)) {
                 if(isImageURL(_img)){
                     prizes.push({ name: _name, img:_img, quantity: _quantity });
                 }else{
