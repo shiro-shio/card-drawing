@@ -106,15 +106,21 @@ function game() {
     let totalPrizes = prizes.reduce((acc, prize) => acc + prize.quantity, 0);
     const prizeList = [];
     for (const prize of prizes) {
-        for (let i = 0; i < prize.quantity; i++) {
-            prizeList.push(prize.name);
+        if (bag) {
+            for (let i = 0; i < prize.quantity * 5; i++) {
+                prizeList.push(prize.name);
+            }
+        } else {
+            for (let i = 0; i < prize.quantity; i++) {
+                prizeList.push(prize.name);
+            }
         }
     };
-    if (bag){
-        while (prizeList.length < 100) {
+    if (bag) {
+        while (prizeList.length < 500) {
             prizeList.push('');
         }
-    }else{
+    } else {
         while (prizeList.length < numCards) {
             prizeList.push('');
         }
