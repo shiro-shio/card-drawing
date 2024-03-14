@@ -62,6 +62,7 @@ document.getElementById('game-start').addEventListener('click', () => {
     let _name = '';
     let _quantity = 0;
     let _img = '';
+    let _id = 0;
     prizes = [];
     const containers = document.querySelectorAll('.table-container');
     containers.forEach(container => {
@@ -75,15 +76,16 @@ document.getElementById('game-start').addEventListener('click', () => {
             } else if (input.name === 'col2' && input.value.trim() !== '') {
                 _quantity = parseInt(input.value.trim(), 10);
             }
-            if (_name && _quantity > 0) {
+            if ((_name && _quantity > 0) || (_img && _quantity > 0)) {
                 if(isImageURL(_img)){
-                    prizes.push({ name: _name, img:_img, quantity: _quantity });
+                    prizes.push({id:_id, name: _name, img:_img, quantity: _quantity });
                 }else{
-                    prizes.push({ name: _name, img:'', quantity: _quantity });
+                    prizes.push({id:_id, name: _name, img:'', quantity: _quantity });
                 }
                 _name = '';
                 _quantity = 0;
                 _img = '';
+                _id++;
             }
         });
         if (filledInputs.length === 0) {
@@ -108,11 +110,11 @@ function game() {
     for (const prize of prizes) {
         if (bag) {
             for (let i = 0; i < prize.quantity * 5; i++) {
-                prizeList.push(prize.name);
+                prizeList.push(prize.id);
             }
         } else {
             for (let i = 0; i < prize.quantity; i++) {
-                prizeList.push(prize.name);
+                prizeList.push(prize.id);
             }
         }
     };
@@ -131,22 +133,22 @@ function game() {
 
     for (let i = 0; i < numCards; i++) {
         const card = document.createElement('div');
-        let prizeName
+        let prizeId
         card.classList.add('card');
         card.id = i
         //card.textContent = i + 1
         card.addEventListener('click', function () {
             if(bag){
-                prizeName = getRandomlist(prizeList);
+                prizeId = getRandomlist(prizeList);
             }else{
-                prizeName = prizeList[i];
+                prizeId = prizeList[i];
             }
-            const prize = prizes.find(prize => prize.name === prizeName);
+            const prize = prizes.find(prize => prize.id === prizeId);
             card.classList.add('opencard');
             if (prize) {
                 card.style.backgroundImage = `url(${prize.img})`
+                card.textContent = prize.name;
             }
-            card.textContent = prizeName;
         });
 
         card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 100 / 3.14/2*1.5}px)`;
