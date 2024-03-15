@@ -22,7 +22,7 @@
   width: 90px;/*3:5*/
   height: 150px;/**/
   background-color: #70baff;
-  background-image: url(img/1.png);
+  background-image: none;
   background-repeat: round;
   border: 1px solid #000000;
   border-radius: 5px;

@@ -1,9 +1,9 @@
 const container = document.getElementById('container');
 const angleInit = -80;
 let cards
-// 卡牌數量 獎品名稱 獎品數量 獎品圖片
 let rot = true
 let bag = false
+let backcard
 let numCards = 20;
 let angleIncrement = 360 / numCards;
 let prizes = [
@@ -21,7 +21,7 @@ function gameset(){
     angleIncrement = 360 / numCards;
     rot = document.getElementById('option1').checked
     bag = document.getElementById('option2').checked
-
+    backcard = document.getElementById('backcard').value
 }
 
 function generateTableWithInputs(rows) {
@@ -135,6 +135,7 @@ function game() {
         const card = document.createElement('div');
         let prizeId
         card.classList.add('card');
+        card.style.backgroundImage = `url(${backcard})`;
         card.id = i
         //card.textContent = i + 1
         card.addEventListener('click', function () {
@@ -161,7 +162,15 @@ function game() {
     container.appendChild(card);
 
     cards = document.querySelectorAll('.card');
-    mousestart()
+    if (!isMouseTracking){
+        document.addEventListener('click', function(event) {
+            if (event.touches && event.touches.length > 0) {
+                touchstart()
+            } else {
+                mousestart()
+            }
+        });
+    }
     autirun()
 }
 
@@ -222,24 +231,34 @@ function mousestart(){
         isMouseTracking = true;
     }
 }
+function touchstart(){
+    if (!isMouseTracking) {
+        container.addEventListener('touchstart', function (event) {
+            isDragging = true;
+            previousMouseX = event.clientX;
+            inertia = 0;
+            clearInterval(autoRotateInterval);
+        });
+        
+        document.addEventListener('touchend', function () {
+            isDragging = false;
+            clearInterval(autoRotateInterval);
+            autirun()
+        });
 
-//function updateCardTransforms() {
-//    cards.forEach((card, index) => {
-//        const rotation = mouseX + index * angleIncrement;
-//        card.style.transform = `rotateY(${rotation}deg) translateZ(${numCards * 95 / 3.14 / 2}px)`;
-//        const zIndex = numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)) + 1;
-//        card.style.zIndex = zIndex;
-//    });
-//    if (!isDragging) {
-//        mouseX += inertia;
-//        inertia *= 0.95;
-//        if (Math.abs(inertia) < 0.01) {
-//            inertia = 0;
-//        }
-//        requestAnimationFrame(updateCardTransforms);
-//    }
-//}
-//  
+        document.addEventListener('touchmove', function (event) {
+            if (isDragging) {
+                const delta = event.clientX - previousMouseX;
+                mouseX += delta * 0.1;
+                previousMouseX = event.clientX;
+                updateCardTransforms();
+            }
+        });
+        isMouseTracking = true;
+    }
+}
+
+
 function updateCardTransforms() {
     const newStyles = [];
     for (let i = 0; i < cards.length; i++) {
