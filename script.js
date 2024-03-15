@@ -149,6 +149,8 @@ function game() {
             if (prize) {
                 card.style.backgroundImage = `url(${prize.img})`
                 card.textContent = prize.name;
+            }else{
+                card.style.backgroundImage = 'none'
             }
         });
 
