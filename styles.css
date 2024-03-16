@@ -59,6 +59,14 @@
   background-color: #00000000;
 }
 
+#prize-list{
+  display: flex;
+  margin-top: 10px;
+  width: 476px;
+  height: 300px;
+  overflow-x: hidden;
+}
+
 input[name="col0"]{
   width: 80px;
 }

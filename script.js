@@ -41,10 +41,8 @@ function generateTableWithInputs(rows) {
 
     table += '</table>';
     document.getElementById('table-container1').innerHTML = table;
-    document.getElementById('table-container2').innerHTML = table;
-    document.getElementById('table-container3').innerHTML = table;
 }
-generateTableWithInputs(10);
+generateTableWithInputs(30);
 
 for (var ex=0; ex<prizes.length;ex++){
     document.getElementById('table-container1').querySelectorAll('input[name="col0"]')[ex].value=prizes[ex].name
@@ -237,7 +235,7 @@ function touchstart(){
     if (!isMouseTracking) {
         container.addEventListener('touchstart', function (event) {
             isDragging = true;
-            previousMouseX = event.clientX;
+            previousTouchX = event.touches[0].clientX;
             inertia = 0;
             clearInterval(autoRotateInterval);
         });
@@ -250,9 +248,9 @@ function touchstart(){
 
         document.addEventListener('touchmove', function (event) {
             if (isDragging) {
-                const delta = event.clientX - previousMouseX;
+                const delta = event.touches[0].clientX - previousTouchX;
                 mouseX += delta * 0.1;
-                previousMouseX = event.clientX;
+                previousTouchX = event.touches[0].clientX; 
                 updateCardTransforms();
             }
         });
