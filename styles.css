@@ -62,7 +62,7 @@
 #prize-list{
   display: flex;
   margin-top: 10px;
-  width: 476px;
+  width: 425px;
   height: 300px;
   overflow-x: hidden;
 }
@@ -71,7 +71,7 @@ input[name="col0"]{
   width: 80px;
 }
 input[name="col1"]{
-  width: 250px;
+  width: 200px;
 }
 input[name="col2"]{
   width: 70px;

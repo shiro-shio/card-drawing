@@ -162,14 +162,16 @@ function game() {
     container.appendChild(card);
 
     cards = document.querySelectorAll('.card');
-    if (!isMouseTracking){
-        document.addEventListener('click', function(event) {
-            if (event.touches && event.touches.length > 0) {
-                touchstart()
-            } else {
-                mousestart()
-            }
-        });
+    if (!isMouseTracking) {
+        if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
+            document.addEventListener('touchstart', function (event) {
+                touchstart();
+            });
+        } else {
+            document.addEventListener('mousedown', function (event) {
+                mousestart();
+            });
+        }
     }
     autirun()
 }
@@ -248,12 +250,13 @@ function touchstart(){
 
         document.addEventListener('touchmove', function (event) {
             if (isDragging) {
+                event.preventDefault();
                 const delta = event.touches[0].clientX - previousTouchX;
                 mouseX += delta * 0.1;
                 previousTouchX = event.touches[0].clientX; 
                 updateCardTransforms();
             }
-        });
+        }, { passive: false });
         isMouseTracking = true;
     }
 }
