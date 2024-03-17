@@ -18,6 +18,33 @@
 }
 
 .card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  position: absolute;
+  width: 90px;/*3:5*/
+  height: 150px;/**/
+  background-color: #70baff;
+  background-image: none;
+  background-repeat: round;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 150px;/**/
+  font-size: 20px;
+  transition: transform 0.5s;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.backcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
   position: absolute;
   width: 90px;/*3:5*/
   height: 150px;/**/
@@ -47,6 +74,7 @@
 .opencard{
   background-color: #ffffff;
   background-image: none;
+  backface-visibility:hidden;
 }
 
 #wall{
