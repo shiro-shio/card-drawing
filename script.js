@@ -1,9 +1,10 @@
 const container = document.getElementById('container');
 const angleInit = -80;
 let cards
+let backcards
 let rot = true
 let bag = false
-let backcard
+let backcardimg
 let numCards = 20;
 let angleIncrement = 360 / numCards;
 let prizes = [
@@ -21,7 +22,7 @@ function gameset(){
     angleIncrement = 360 / numCards;
     rot = document.getElementById('option1').checked
     bag = document.getElementById('option2').checked
-    backcard = document.getElementById('backcard').value
+    backcardimg = document.getElementById('backcard').value
 }
 
 function generateTableWithInputs(rows) {
@@ -131,9 +132,12 @@ function game() {
 
     for (let i = 0; i < numCards; i++) {
         const card = document.createElement('div');
+        const backcard = document.createElement('div');
         let prizeId
         card.classList.add('card');
-        card.style.backgroundImage = `url(${backcard})`;
+        backcard.classList.add('backcard');
+        card.style.backgroundImage = `url(${backcardimg})`;
+        backcard.style.backgroundImage = `url(${backcardimg})`;
         card.id = i
         //card.textContent = i + 1
         card.addEventListener('click', function () {
@@ -153,8 +157,11 @@ function game() {
         });
 
         card.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 100 / 3.14/2*1.5}px)`;
+        backcard.style.transform = `rotateY(${i * angleIncrement + angleInit}deg) translateZ(${numCards * 100 / 3.14/2*1.5}px)`;
         card.style.zIndex = (numCards - i)*2;
+        backcard.style.zIndex = (numCards - i)*2-1;
         container.appendChild(card);
+        container.appendChild(backcard);
     }
     const card = document.createElement('div');
     card.id = "wall"
@@ -162,6 +169,7 @@ function game() {
     container.appendChild(card);
 
     cards = document.querySelectorAll('.card');
+    backcards = document.querySelectorAll('.backcard');
     if (!isMouseTracking) {
         if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
             document.addEventListener('touchstart', function (event) {
@@ -192,6 +200,7 @@ function autirun() {
         clearInterval(autoRotateInterval);
         autoRotateInterval = setInterval(() => {
             mouseX += 1;
+            updatelock=true
             updateCardTransforms();
         }, 100);
     }
@@ -211,7 +220,7 @@ function mousestart(){
 
         container.addEventListener('mousedown', function (event) {
             isDragging = true;
-            previousMouseX = event.clientX;
+            //previousMouseX = event.clientX;
             inertia = 0;
             clearInterval(autoRotateInterval);
         });
@@ -224,9 +233,11 @@ function mousestart(){
         
         document.addEventListener('mousemove', function (event) {
             if (isDragging) {
-                const delta = event.clientX - previousMouseX;
-                mouseX += delta * 0.1;
+                let delta = event.clientX - previousMouseX;
+                delta = delta > 1 ? 1 : (delta < -1 ? -1 : delta);
+                mouseX += delta;
                 previousMouseX = event.clientX;
+                updatelock=true
                 updateCardTransforms();
             }
         });
@@ -261,26 +272,36 @@ function touchstart(){
     }
 }
 
-
+let updatelock=false
 function updateCardTransforms() {
-    const newStyles = [];
-    for (let i = 0; i < cards.length; i++) {
-        const rotation = mouseX + i * angleIncrement;
-        const zIndex = (numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)))*2;
-        const transformValue = `rotateY(${rotation}deg) translateZ(${numCards * 100 / 3.14 / 2}px)`;
-        newStyles.push({ transform: transformValue, zIndex: zIndex });
-    }
-    cards.forEach((card, index) => {
-        const { transform, zIndex } = newStyles[index];
-        card.style.transform = transform;
-        card.style.zIndex = zIndex;
-    });
-    if (!isDragging) {
-        mouseX += inertia;
-        inertia *= 0.95;
-        if (Math.abs(inertia) < 0.01) {
-            inertia = 0;
+    if(updatelock){
+        updatelock=false
+        const newStyles = [];
+        for (let i = 0; i < cards.length; i++) {
+            const rotation = mouseX + i * angleIncrement;
+            const zIndex = (numCards - Math.abs(Math.floor(((Math.abs(rotation) - angleInit) % 360) / angleIncrement)))*2;
+            const transformValue = `rotateY(${rotation}deg) translateZ(${numCards * 100 / 3.14 / 2}px)`;
+            const transition = `transform 0.5s`; // 添加過渡效果
+            newStyles.push({ transform: transformValue, zIndex: zIndex , transition: transition });
         }
-        requestAnimationFrame(updateCardTransforms);
+        cards.forEach((card, index) => {
+            const { transform, zIndex } = newStyles[index];
+            card.style.transform = transform;
+            card.style.zIndex = zIndex;
+        });
+        backcards.forEach((card, index) => {
+            const { transform, zIndex } = newStyles[index];
+            card.style.transform = transform;
+            card.style.zIndex = zIndex-1;
+        });
+        if (!isDragging) {
+            mouseX += inertia;
+            inertia *= 0.95;
+            if (Math.abs(inertia) < 0.01) {
+                inertia = 0;
+            }
+            requestAnimationFrame(updateCardTransforms);
+        }
     }
 }
+
